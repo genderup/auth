@@ -7,3 +7,6 @@ server:
 
 test:
 	env $$(cat .testenv) go test $(TEST)
+
+updatedeps:
+	go get -u -v ./...

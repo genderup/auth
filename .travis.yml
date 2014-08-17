@@ -5,6 +5,8 @@ go:
   - 1.3
   - tip
 
+install: make updatedeps
+
 script:
   - go test ./
 
