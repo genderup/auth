@@ -10,3 +10,4 @@ test:
 
 updatedeps:
 	go get -u -v ./...
+	go get -u -v github.com/lib/pq
