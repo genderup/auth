@@ -1,5 +1,7 @@
 # In-App Cloud Auth
 
+[![Build Status](https://travis-ci.org/inappcloud/auth.svg?branch=master)](https://travis-ci.org/inappcloud/auth)
+
 An authentication microservice.
 You can use it directly as a REST API or use the package as part of your Go web application.
 It is built with Goji and requires PostgreSQL.
@@ -64,25 +66,23 @@ token | string | A JWT token
 
 # Run
 
-You need to create a file named `.env` with the variables `DATABASE_URL` and `PRIVATE_KEY` like this:
+## Locally
 
 ```
-DATABASE_URL=postgres://localhost/auth PRIVATE_KEY=asdfghjkl123456zxcvbnwertyu45678
+make setup
+make server
 ```
 
-Then you can use `make server`.
-
-It runs on port `8080` by default but you can add the variable `PORT` in `.env` to change the port.
+If you have a custom environment for PostgreSQL, please update variable `DATABASE_URL` in file `.env`.
+It runs on port `8080` by default but you can add `PORT` in `.env` to change the port.
 
 # Test
 
-You need to create a file named `.testenv` with the variable `DATABASE_URL` like this:
-
 ```
-DATABASE_URL=postgres://localhost/auth_test
+make
 ```
 
-Then you can use `make`.
+If you have a custom environment for PostgreSQL, please update `TEST_DB` in file `Makefile`.
 
 # FAQ
 
