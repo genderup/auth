@@ -10,7 +10,7 @@ script:
 
 before_script:
   - psql -c 'create database inappcloud_auth_test;' -U postgres
-  - psql -c 'create table inappcloud_auth_test.users (id serial, email text, password text, token text);' -U postgres
+  - psql -c 'create table users (id serial, email text, password text, token text);' -d inappcloud_auth_test -U postgres
 
 env: DATABASE_URL=postgres://postgres@localhost/inappcloud_auth_test
 
