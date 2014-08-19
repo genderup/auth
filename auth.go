@@ -12,22 +12,19 @@ import (
 	"github.com/zenazn/goji/web/middleware"
 )
 
+var db *sql.DB
+
 type body struct {
 	Data []User `json:"data"`
 }
 
-func Mux(db *sql.DB) http.Handler {
+func Mux(mainDb *sql.DB) http.Handler {
+	db = mainDb
+
 	m := web.New()
 	m.NotFound(jsonapi.NotFound)
 	m.Use(jsonapi.ContentTypeHandler)
 	m.Use(middleware.EnvInit)
-	m.Use(func(c *web.C, next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			c.Env["db"] = db
-			next.ServeHTTP(w, r)
-		})
-	})
-
 	m.Use(bodyParserHandler)
 	m.Use(dataCheckerHandler)
 
@@ -68,7 +65,7 @@ func newBody(users ...User) *body {
 
 func userCreationHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 	u := &c.Env["body"].(*body).Data[0]
-	ur := &UserRepo{u, c.Env["db"].(*sql.DB)}
+	ur := &UserRepo{u, db}
 
 	err := ur.Create()
 	if err != nil {
@@ -83,7 +80,7 @@ func userCreationHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 func sessionCreationHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 	reqUser := c.Env["body"].(*body).Data[0]
 	u := new(User)
-	ur := &UserRepo{u, c.Env["db"].(*sql.DB)}
+	ur := &UserRepo{u, db}
 
 	ur.FetchByEmail(reqUser.Email)
 
@@ -107,7 +104,7 @@ func sessionCreationHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 
 func currentUserHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 	u := new(User)
-	ur := &UserRepo{u, c.Env["db"].(*sql.DB)}
+	ur := &UserRepo{u, db}
 
 	token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) ([]byte, error) {
 		return []byte(os.Getenv("PRIVATE_KEY")), nil
