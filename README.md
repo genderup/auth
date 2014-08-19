@@ -1,6 +1,4 @@
-# In-App Cloud Auth
-
-[![Build Status](https://travis-ci.org/inappcloud/auth.svg?branch=master)](https://travis-ci.org/inappcloud/auth)
+# In-App Cloud Auth [![Build Status](https://travis-ci.org/inappcloud/auth.svg?branch=master)](https://travis-ci.org/inappcloud/auth)
 
 An authentication microservice.
 You can use it directly as a REST API or use the package as part of your Go web application.
@@ -9,16 +7,24 @@ It is built with Goji and requires PostgreSQL.
 
 # API
 
-You can call the API directly with curl to test it.
+It uses [JSON API](http://jsonapi.org) for request and response format.
 
-## POST /users
+## Creating a user
+
+To create a user, you need the following information:
 
 name | type | description
 ---- | ---- | -----------
 email | string | **Required**. A valid email
 password | string | **Required**. A password
 
-``` json
+Then you can make a request like this:
+
+```
+POST /users
+Content-Type: application/json
+Accept: application/json
+
 {
   "data": [{
     "email": "john@doe.com",
@@ -27,9 +33,17 @@ password | string | **Required**. A password
 }
 ```
 
-## POST /sessions
+Endpoint will respond with `400 Bad Request` if the body is not JSON and with `422 Unprocessable Entity` if the body has invalid formatting or params.
 
-``` json
+## Log in
+
+It's almost the same as user creation, the only change is the URI.
+
+```
+POST /sessions
+Content-Type: application/json
+Accept: application/json
+
 {
   "data": [{
     "email": "john@doe.com",
@@ -38,16 +52,22 @@ password | string | **Required**. A password
 }
 ```
 
-## GET /users/me
+## Current user
 
 You must set the `Authorization` header with value `Bearer token` where `token` is the value you will get from the other endpoints.
 
+```
+GET /users/me
+Accept: application/json
+Authorization: Bearer jnshionefv2r3rnvdfoi239
+```
+
 ## Response for all endpoints
 
-name | type | description
----- | ---- | -----------
-email | string | User's email
-password | string | User's password
+name  | type   | description
+----- | ------ | -----------
+id    | int    | User ID
+email | string | User Email
 token | string | A JWT token
 
 ``` json
@@ -60,9 +80,7 @@ token | string | A JWT token
 }
 ```
 
-## Errors
-
-**TODO**: Add documentation
+Endpoint will respond with `401 Unauthorized` if the token is invalid.
 
 # Run
 
