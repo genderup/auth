@@ -22,7 +22,7 @@ func Mux(mainDb *sql.DB) http.Handler {
 	db = mainDb
 
 	m := web.New()
-	m.NotFound(jsonapi.NotFound)
+	m.NotFound(jsonapi.NotFoundHandler)
 	m.Use(jsonapi.ContentTypeHandler)
 	m.Use(middleware.EnvInit)
 	m.Use(bodyParserHandler)
@@ -39,7 +39,7 @@ func bodyParserHandler(c *web.C, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
 			c.Env["body"] = new(body)
-			jsonapi.Handler(c.Env["body"], next).ServeHTTP(w, r)
+			jsonapi.BodyParserHandler(c.Env["body"], next).ServeHTTP(w, r)
 		} else {
 			next.ServeHTTP(w, r)
 		}
