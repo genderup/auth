@@ -109,7 +109,7 @@ func currentUserHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 	u := new(User)
 	ur := &UserRepo{u, c.Env["db"].(*sql.DB)}
 
-	token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) ([]byte, error) {
+	token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("PRIVATE_KEY")), nil
 	})
 
