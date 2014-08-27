@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/inappcloud/auth"
+	_ "github.com/lib/pq"
 	"github.com/zenazn/goji"
 )
 
